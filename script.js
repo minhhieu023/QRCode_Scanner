@@ -325,8 +325,8 @@ class QRCodeScanner {
         
         // Insert buttons
         const previewContainer = this.previewImage.parentElement;
-        previewContainer.insertBefore(this.resizeButton, this.previewImage);
-        previewContainer.insertBefore(resizeControls, this.previewImage);
+        previewContainer.append(this.resizeButton, this.previewImage);
+        previewContainer.append(resizeControls, this.previewImage);
         
         this.resizeControls = resizeControls;
         this.applyButton = applyButton;
@@ -361,6 +361,7 @@ class QRCodeScanner {
     }
 
     async applyResize() {
+        this.setLoadingState(true);
         if (this.cropper) {
             try {
                 // Get cropped canvas
@@ -383,6 +384,7 @@ class QRCodeScanner {
                 this.showToast('Lỗi khi cập nhật ảnh!');
             }
         }
+        this.setLoadingState(false)
     }
 
     cancelResize() {
