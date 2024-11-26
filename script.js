@@ -233,8 +233,8 @@ class QRCodeScanner {
     async decodeQRCode(imageElement) {
         return new Promise((resolve, reject) => {
             const timeout = setTimeout(() => {
-                reject(new Error('Quá thời gian xử lý QR (100 giây)'));
-            }, 100000);
+                reject(new Error('Quá thời gian xử lý QR (5 giây)'));
+            }, 5000);
     
             try {
                 // Wait for image to be fully loaded
@@ -283,50 +283,6 @@ class QRCodeScanner {
                         clearTimeout(timeout);
                         reject(new Error('Lỗi khi xử lý ảnh: ' + error.message));
                     }
-                }
-            } catch (error) {
-                clearTimeout(timeout);
-                reject(new Error('Lỗi khi xử lý ảnh: ' + error.message));
-            }
-        });
-    }
-
-    async decodeQRCode(image) {
-        return new Promise((resolve, reject) => {
-            const timeout = setTimeout(() => {
-                reject(new Error('Quá thời gian xử lý QR (10 giây)'));
-            }, 10000);
-    
-            try {
-                // Set canvas dimensions to match original image size
-                this.hiddenCanvas.width = image.naturalWidth;
-                this.hiddenCanvas.height = image.naturalHeight;
-    
-                // Draw image onto canvas
-                const ctx = this.hiddenCanvas.getContext('2d');
-                ctx.drawImage(image, 0, 0);
-    
-                // Get image data
-                const imageData = ctx.getImageData(0, 0, this.hiddenCanvas.width, this.hiddenCanvas.height);
-                
-                // Try to decode QR code with different inversion attempts
-                let code = jsQR(imageData.data, imageData.width, imageData.height, {
-                    inversionAttempts: "dontInvert"
-                });
-                
-                if (!code) {
-                    // Try again with inversion if first attempt failed
-                    code = jsQR(imageData.data, imageData.width, imageData.height, {
-                        inversionAttempts: "invertFirst"
-                    });
-                }
-                
-                clearTimeout(timeout);
-                
-                if (code) {
-                    resolve(code);
-                } else {
-                    reject(new Error('Không tìm thấy mã QR'));
                 }
             } catch (error) {
                 clearTimeout(timeout);
