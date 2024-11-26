@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citizen QR Scanner</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Add Font Awesome for copy icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Add latest jsQR library -->
+    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+</head>
+<body>
+    <div class="header">
+        <h1>Tool này dành cho em bé iu Ngọc Hà</h1>
+    </div>
+    <div class="container">
+        <div class="left-panel">
+            <h2>Quét mã QR</h2>
+            <div class="upload-section">
+                <input type="file" id="file-input" accept="image/*">
+                <button id="scan-button" class="button">
+                    <span class="button-text">Quét mã QR</span>
+                    <span class="loading-spinner" style="display: none;"></span>
+                </button>
+            </div>
+            <div class="preview-container">
+                <img id="preview-image" style="display: none;">
+                <!-- Add hidden canvas for image processing -->
+                <canvas id="hidden-canvas" style="display: none;"></canvas>
+            </div>
+        </div>
+        <div class="right-panel">
+            <div class="result-header">
+                <h2>Kết quả</h2>
+                <button id="copy-all" class="button copy-button" style="display: none;">
+                    <i class="fas fa-copy"></i> Sao chép tất cả
+                </button>
+            </div>
+            <div id="result">
+                <div id="result-text"></div>
+            </div>
+        </div>
+    </div>
+    <p class="footer">Powered by <a href="https://fb.com/hieuitute">Vo Minh Hieu</a></p>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast">Đã sao chép vào clipboard!</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
