@@ -87,7 +87,7 @@ class QRCodeScanner {
             ];
     
             const formattedData = fields
-                .map((value, index) => value ? `${fieldNames[index]}: ${value}` : null)
+                .map((value, index) => value ? `${fieldNames[index]}: ${ (index === 3 || index === 6) ? this.formatDate(value) :  value}` : null)
                 .filter(item => item !== null)
                 .join('\n');
     
