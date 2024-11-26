@@ -56,7 +56,7 @@ body {
 }
 
 .preview-container {
-    display: flex;
+    display: block;
     justify-content: center;
     align-items: center;
     min-height: 200px;
@@ -131,11 +131,16 @@ h2 {
 #preview-image {
     max-width: 100%;
     max-height: 500px;
+    padding: 8px;
     width: auto;
     height: auto;
     object-fit: contain;
     border-radius: 8px;
+    border: 1px solid #ddd;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.margin-4 {
+    margin: 4px;
 }
 
 /* Toast Notification */
@@ -218,4 +223,25 @@ h2 {
 .loading-state {
     pointer-events: none;
     opacity: 0.7;
+}
+
+
+/* Resize controls */
+.resize-controls {
+    margin: 10px 0;
+    text-align: center;
+}
+
+.resize-button {
+    background-color: #607d8b;
+    margin-right: 10px;
+}
+
+.resize-button:hover {
+    background-color: #455a64;
+}
+
+/* Cropper.js container */
+.cropper-container {
+    max-height: 500px !important;
 }

@@ -11,6 +11,8 @@ class QRCodeScanner {
         this.isProcessing = false;
         
         this.initializeEvents();
+        this.cropper = null;
+        this.createResizeButton();
     }
     setLoadingState(loading) {
         this.isProcessing = loading;
@@ -144,6 +146,8 @@ class QRCodeScanner {
                 this.setLoadingState(false);
             }
         }
+        this.resizeButton.style.display = 'inline-block';
+
     }
 
     visualizeData(qrData) {
@@ -289,6 +293,110 @@ class QRCodeScanner {
                 reject(new Error('Lỗi khi xử lý ảnh: ' + error.message));
             }
         });
+    }
+
+    createResizeButton() {
+        // Create resize controls container
+        const resizeControls = document.createElement('div');
+        resizeControls.className = 'resize-controls';
+        
+        // Create resize button
+        this.resizeButton = document.createElement('button');
+        this.resizeButton.className = 'button resize-button';
+        this.resizeButton.innerHTML = '<i class="fas fa-crop"></i> Chỉnh sửa ảnh';
+        // Create apply and cancel buttons
+        const applyButton = document.createElement('button');
+        applyButton.className = 'button margin-4';
+        applyButton.innerHTML = '<i class="fas fa-check"></i> Áp dụng';
+        applyButton.style.display = 'none';
+
+        const cancelButton = document.createElement('button');
+        cancelButton.className = 'button margin-4';
+        cancelButton.innerHTML = '<i class="fas fa-times"></i> Hủy';
+        cancelButton.style.display = 'none';
+
+        resizeControls.appendChild(applyButton);
+        resizeControls.appendChild(cancelButton);
+        
+        // Add event listeners
+        this.resizeButton.addEventListener('click', () => this.startResize());
+        applyButton.addEventListener('click', () => this.applyResize());
+        cancelButton.addEventListener('click', () => this.cancelResize());
+        
+        // Insert buttons
+        const previewContainer = this.previewImage.parentElement;
+        previewContainer.insertBefore(this.resizeButton, this.previewImage);
+        previewContainer.insertBefore(resizeControls, this.previewImage);
+        
+        this.resizeControls = resizeControls;
+        this.applyButton = applyButton;
+        this.cancelButton = cancelButton;
+    }
+
+    startResize() {
+
+        if (!this.fileInput.files.length) {
+            alert('Vui lòng chọn ảnh trước!');
+            return;
+        }
+
+
+        this.resizeButton.style.display = 'none';
+        this.applyButton.style.display = 'inline-block';
+        this.cancelButton.style.display = 'inline-block';
+        
+        // Initialize cropper
+        this.cropper = new Cropper(this.previewImage, {
+            aspectRatio: NaN,
+            viewMode: 1,
+            dragMode: 'move',
+            restore: false,
+            guides: true,
+            center: true,
+            highlight: false,
+            cropBoxMovable: true,
+            cropBoxResizable: true,
+            toggleDragModeOnDblclick: false,
+        });
+    }
+
+    async applyResize() {
+        if (this.cropper) {
+            try {
+                // Get cropped canvas
+                const croppedCanvas = this.cropper.getCroppedCanvas();
+                
+                // Convert to blob
+                const blob = await new Promise(resolve => {
+                    croppedCanvas.toBlob(resolve, 'image/jpeg', 0.9);
+                });
+                
+                // Create URL and update preview
+                const url = URL.createObjectURL(blob);
+                this.previewImage.src = url;
+                
+                // Cleanup
+                this.cleanupResize();
+                this.showToast('Đã cập nhật ảnh thành công!');
+            } catch (error) {
+                console.error('Error applying resize:', error);
+                this.showToast('Lỗi khi cập nhật ảnh!');
+            }
+        }
+    }
+
+    cancelResize() {
+        this.cleanupResize();
+    }
+
+    cleanupResize() {
+        if (this.cropper) {
+            this.cropper.destroy();
+            this.cropper = null;
+        }
+        this.resizeButton.style.display = 'inline-block';
+        this.applyButton.style.display = 'none';
+        this.cancelButton.style.display = 'none';
     }
 }
 
